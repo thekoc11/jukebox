@@ -25,12 +25,16 @@ def create_reverse_lookup(atoi):
     return itoa
 
 class ArtistGenreProcessor():
-    def __init__(self, v3=False):
+    def __init__(self, v3=False, v4=False):
         self.v3 = v3
+        self.v4 = v4
         dirname = os.path.dirname(__file__)
         if self.v3:
             self.artist_id_file = f"{dirname}/ids/v3_artist_ids.txt"
             self.genre_id_file = f"{dirname}/ids/v3_genre_ids.txt"
+        elif self.v4:
+            self.artist_id_file = f"{dirname}/ids/v4_artist_ids.txt"
+            self.genre_id_file = f"{dirname}/ids/v4_genre_ids.txt"
         else:
             self.artist_id_file = f"{dirname}/ids/v2_artist_ids.txt"
             self.genre_id_file = f"{dirname}/ids/v2_genre_ids.txt"
@@ -49,7 +53,7 @@ class ArtistGenreProcessor():
         return self.artist_ids.get(artist, 0)
 
     def get_genre_ids(self, genre):
-        if self.v3:
+        if self.v3 or self.v4:
             genres = [genre.lower()]
         else:
             # In v2, we convert genre into a bag of words
@@ -65,7 +69,7 @@ class ArtistGenreProcessor():
         return self.artists[artist_id]
 
     def get_genre(self, genre_ids):
-        if self.v3:
+        if self.v3 or self.v4:
             assert len(genre_ids) == 1
             genre = self.genres[genre_ids[0]]
         else:

@@ -41,6 +41,8 @@ class DataProcessor():
         self.test_dataset = OffsetDataset(self.dataset, train_len, len(self.dataset), test=True)
 
     def create_samplers(self, hps):
+        #Uses torch methods to create a sample distribution for the dataset.
+        #Visit https://pytorch.org/docs/stable/data.html for more info on smaplers
         if not dist.is_available():
             self.train_sampler = BatchSampler(RandomSampler(self.train_dataset), batch_size=hps.bs, drop_last=True)
             self.test_sampler = BatchSampler(RandomSampler(self.test_dataset), batch_size=hps.bs, drop_last=True)

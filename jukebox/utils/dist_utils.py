@@ -27,7 +27,7 @@ def allreduce(x, op=dist.ReduceOp.SUM):
 def allgather_lists(xs):
     bs = len(xs)
     total_bs = dist.get_world_size()*len(xs)
-    lengths = torch.tensor([len(x) for x in xs], dtype=t.long, device='cuda')
+    lengths = torch.tensor([len(x) for x in xs], dtype=torch.long, device='cuda')
     lengths = allgather(lengths)
     assert lengths.shape == (total_bs,)
     max_length = torch.max(lengths).item()

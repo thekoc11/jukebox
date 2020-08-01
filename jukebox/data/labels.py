@@ -39,8 +39,8 @@ class EmptyLabeller():
         return dict(y=ys, info=infos)
 
 class Labeller():
-    def __init__(self, max_genre_words, n_tokens, sample_length, v3=False):
-        self.ag_processor = ArtistGenreProcessor(v3)
+    def __init__(self, max_genre_words, n_tokens, sample_length, v3=False, v4=False):
+        self.ag_processor = ArtistGenreProcessor(v3, v4)
         self.text_processor = TextProcessor(v3)
         self.n_tokens = n_tokens
         self.max_genre_words = max_genre_words
@@ -56,6 +56,7 @@ class Labeller():
         tokens, _ = get_relevant_lyric_tokens(full_tokens, self.n_tokens, total_length, offset, self.sample_length)
 
         assert len(genre_ids) <= self.max_genre_words
+        # this essentially makes len(genre_ids) = max_genre_words
         genre_ids = genre_ids + [-1] * (self.max_genre_words - len(genre_ids))
         y = np.array([total_length, offset, self.sample_length, artist_id, *genre_ids, *tokens], dtype=np.int64)
         assert y.shape == self.label_shape, f"Expected {self.label_shape}, got {y.shape}"
@@ -124,6 +125,7 @@ if __name__ == '__main__':
     label = labeller.get_label("Alan Jackson", "Country Rock", "old town road", 4*60*44100, 0)
     print(label, labeller.describe_label(label['y']))
 
+    # try for v4, compare results with the above
 
 
 

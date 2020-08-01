@@ -35,7 +35,7 @@ class FilesAudioDataset(Dataset):
         self.durations = [int(durations[i]) for i in keep]
         self.cumsum = np.cumsum(self.durations)
 
-    def init_dataset(self, hps):
+    def init_dataset(self, hps):#gets audio files and labels?
         # Load list of files and starts/durations
         files = librosa.util.find_files(f'{hps.audio_files_dir}', ['mp3', 'opus', 'm4a', 'aac', 'wav'])
         print_all(f"Found {len(files)} files. Getting durations")
@@ -44,9 +44,10 @@ class FilesAudioDataset(Dataset):
         self.filter(files, durations)
 
         if self.labels:
-            self.labeller = Labeller(hps.max_bow_genre_size, hps.n_tokens, self.sample_length, v3=hps.labels_v3)
+            self.labeller = Labeller(hps.max_bow_genre_size, hps.n_tokens, self.sample_length,#
+                                     v3=hps.labels_v3, v4=hps.labels_v4)
 
-    def get_index_offset(self, item):
+    def get_index_offset(self, item):# get offset of the given dataset item; offset is a part of labels
         # For a given dataset item and shift, return song index and offset within song
         half_interval = self.sample_length//2
         shift = np.random.randint(-half_interval, half_interval) if self.aug_shift else 0
@@ -75,7 +76,15 @@ class FilesAudioDataset(Dataset):
             example, ("unknown", "classical", "") could be a metadata for a
             piano piece.
         """
-        return None, None, None
+        import pandas as pd
+        import os
+        dirname = os.path.dirname(__file__)
+        metadata_path = f"{dirname}/ids/metadata.csv"
+        df = pd.read_csv(metadata_path, index_col='Path')
+        artist = df[filename, 'Artist']
+        genre = df[filename, 'Raga']
+        lyrics = ''
+        return artist, genre, lyrics
 
     def get_song_chunk(self, index, offset, test=False):
         filename, total_length = self.files[index], self.durations[index]

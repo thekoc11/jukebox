@@ -9,9 +9,11 @@ class TextProcessor():
         else:
             vocab = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,:;!?-+\'\"()[] \t\n'
             not_vocab = re.compile('[^A-Za-z0-9.,:;!?\-+\'\"()\[\] \t\n]+')
+        # every alphabet in the vocab gets an integer id
         self.vocab = {vocab[index]: index + 1 for index in range(len(vocab))}
         self.vocab['<unk>'] = 0
         self.n_vocab = len(vocab) + 1
+        # tokens is the reverse dict of vocab
         self.tokens = {v: k for k, v in self.vocab.items()}
         self.tokens[0] = ''  # <unk> became ''
         self.not_vocab = not_vocab
