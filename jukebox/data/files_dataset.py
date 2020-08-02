@@ -32,8 +32,10 @@ class FilesAudioDataset(Dataset):
         print_all(f'self.sr={self.sr}, min: {self.min_duration}, max: {self.max_duration}')
         print_all(f"Keeping {len(keep)} of {len(files)} files")
         self.files = [files[i] for i in keep]
-        self.durations = [int(durations[i]) for i in keep]
+        self.durations = [float(durations[i]) for i in keep]
         self.cumsum = np.cumsum(self.durations)
+        print(f"Cumulative Sum: {self.cumsum}")
+        print(f"durations:{self.durations}")
 
     def init_dataset(self, hps):#gets audio files and labels?
         # Load list of files and starts/durations
@@ -78,11 +80,15 @@ class FilesAudioDataset(Dataset):
         """
         import pandas as pd
         import os
-        dirname = os.path.dirname(__file__)
-        metadata_path = f"{dirname}/ids/metadata.csv"
-        df = pd.read_csv(metadata_path, index_col='Path')
-        artist = df[filename, 'Artist']
-        genre = df[filename, 'Raga']
+        base_path = r"/mnt/c/Users/theko/Documents/Dataset"
+        metadata_path = os.path.join(base_path, 'metadata.csv')
+        filename = filename.strip(base_path).replace("/", "")
+        df = pd.read_csv(metadata_path, sep='\n')
+        df[['Path', 'Artist', 'Raga', 'RagaId', 'temp']] = df['Path,Artist,Raga,RagaId'].str.split(',', expand=True)
+        df = df.drop(columns=['Path,Artist,Raga,RagaId', 'temp'])
+        df = df.set_index('Path')
+        artist = df.loc[filename, 'Artist']
+        genre = df.loc[filename, 'Raga']
         lyrics = ''
         return artist, genre, lyrics
 

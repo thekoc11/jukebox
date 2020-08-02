@@ -159,7 +159,12 @@ labels_v3 = Hyperparams(
     max_bow_genre_size=1,
     n_vocab=79,
 )
-
+labels_v4 = Hyperparams(
+    y_bins=(604, 7898),
+    t_bins=64,
+    max_bow_genre_size=1,
+    n_vocab=79,
+)
 prior_1b_lyrics = Hyperparams(
     level=2,
     n_ctx=6144,
@@ -171,6 +176,7 @@ prior_1b_lyrics = Hyperparams(
     init_scale=0.2,
     c_res=1,
     labels_v3=True,
+    labels_v4=True,
     min_duration=17.84,
     max_duration=600.0,
     use_tokens=True,
@@ -182,7 +188,7 @@ prior_1b_lyrics = Hyperparams(
     alignment_layer=63,
     alignment_head=0,
 )
-prior_1b_lyrics.update(labels_v3)
+prior_1b_lyrics.update(labels_v4)
 HPARAMS_REGISTRY["prior_1b_lyrics"] = prior_1b_lyrics
 
 # Small models
@@ -220,6 +226,7 @@ HPARAMS_REGISTRY["small_prior"] = small_prior
 small_labelled_prior = Hyperparams(
     labels=True,
     labels_v3=True,
+    labels_v4 = True,
     y_bins=(10,100), # Set this to (genres, artists) for your dataset
     max_bow_genre_size=1,
     min_duration=60.0,
@@ -242,6 +249,7 @@ small_single_enc_dec_prior = Hyperparams(
     single_enc_dec=True,
     labels=True,
     labels_v3=True,
+    labels_v4=True,
     y_bins=(10,100), # Set this to (genres, artists) for your dataset
     max_bow_genre_size=1,
     min_duration=60.0,
@@ -272,6 +280,7 @@ small_sep_enc_dec_prior = Hyperparams(
     prime_loss_fraction=0.4,
     labels=True,
     labels_v3=True,
+    labels_v4=True,
     y_bins=(10,100), # Set this to (genres, artists) for your dataset
     max_bow_genre_size=1,
     min_duration=60.0,
@@ -510,6 +519,7 @@ DEFAULTS["fp16"] = Hyperparams(
 DEFAULTS["train_test_eval"] = Hyperparams(
     labels=True,
     labels_v3=False,
+    labels_v4=False,
     dump=False,
     ema=True,
     ema_fused=True,
